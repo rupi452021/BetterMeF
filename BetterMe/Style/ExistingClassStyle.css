@@ -1,0 +1,121 @@
+﻿ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #144e8487;
+}
+
+li {
+    float: right;
+}
+
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+        li a:hover {
+            background-color: #144e84e6;
+            color: white;
+            
+        }
+div#notesChoosing {
+    width: 30%;
+    margin-top: -30px;
+    margin-left: 45%;
+    border: 1px solid black;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+div#btnsRemark {
+    margin-left: 54%;
+    margin-top: 16px;
+}
+
+.BackBtn {
+    color: black;
+    float: right;
+    margin-right: 15px;
+    padding: 5px 14px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+}
+
+    .BackBtn:hover {
+        color: white;
+        font-weight: bold;
+        float: right;
+        margin-right: 15px;
+        padding: 5px 14px;
+        background-color: #292e33c4;
+        border: 1px solid #ddd;
+        border-radius: 15px;
+    }
+
+button#saveBTN {
+    background: #2770b5ba;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 5px;
+    border-color: white;
+}
+    button#saveBTN:hover {
+        background: #2770b569;
+    }
+
+    button#cancleBTN {
+        background: #b527278a;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        border-radius: 5px;
+        border-color: white;
+    }
+        button#cancleBTN:hover {
+            background: #b527274f;
+        }
+
+#SetPoint {
+    margin: 20px;
+}
+
+#RemarkText {
+    margin-right: 10%;
+}
+
+#remarkName {
+    float: right;
+    height: 22px;
+}
+
+input#losePoints {
+    margin-right: 10px;
+}
+
+.nav-tabs {
+    flex-flow: row-reverse;
+}
+
+.u-footer {
+    background-image: none;
+    /* margin-bottom: 0; */
+    /*position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;*/
+}
+
+/*.active{
+    background-color:green;
+}*/
+
+li{
+    border-right:1px solid #bbb;
+}

@@ -1,0 +1,2 @@
+# BetterMeAfterNoConfig
+ No config

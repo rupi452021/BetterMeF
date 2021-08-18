@@ -1,0 +1,571 @@
+﻿<!DOCTYPE html>
+<html style="font-size: 16px;">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="page_type" content="np-template-header-footer-from-plugin">
+    <title>יצירת כיתה</title>
+    <link rel="icon" href="../images/alienIcon.png">
+ 
+    <link href="../Style/nicepage3.css" rel="stylesheet" />
+    <link href="../Style/Createclass.css" rel="stylesheet" />
+    <link href="../Style/additionalStyle.css" rel="stylesheet" />
+    <!--<script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+    <script class="u-script" type="text/javascript" src="nicepage3.js" defer=""></script>-->
+    <meta name="generator" content="Nicepage 3.8.1, nicepage.com">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
+
+    <!-- שורות בוטסאראפ -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>-->
+
+    <script type="application/ld+json">
+        {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": "Site1",
+        "url": "index.html"
+        }
+    </script>
+
+    <!--file scripts-->
+    <link href="../Style/additionalStyle.css" rel="stylesheet" />
+    <script src="https://igniteui.com/js/modernizr.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/infragistics.core.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/infragistics.lob.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.ext_core.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.ext_collections.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.ext_text.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.ext_io.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.ext_ui.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.documents.core_core.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.ext_collectionsextended.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.excel_core.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.ext_threading.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.ext_web.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.xml.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.documents.core_openxml.js"></script>
+    <script src="https://cdn-na.infragistics.com/igniteui/latest/js/modules/infragistics.excel_serialization_openxml.js"></script>
+    <link href="https://cdn-na.infragistics.com/igniteui/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet"></link>
+    <link href="https://cdn-na.infragistics.com/igniteui/latest/css/structure/infragistics.css" rel="stylesheet"></link>
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $(".next").prop('disabled', true);
+            $("#classTypeCombo").prop("disabled", true);
+            localStorage.removeItem('idClass');
+
+
+            $(".BackBtn").on("click", function () { window.location.href = "TeacherClasses.html"; });
+
+            $("#SubjCombo").on("change", function () {
+                if ($("#SubjCombo").val() != 0)
+                    $("#classTypeCombo").prop("disabled", false);
+                else {
+                    $("#classTypeCombo").prop("disabled", true);
+                    $("#classTypeCombo").val(0);
+                    $("#RightDiv").html("");
+                    $("#LeftDiv").html("");
+                }
+            });
+
+            $(".next").on("click", function () { //כפתור הבא
+                if ($("#classTypeCombo").val() != 0) {
+                    if ($("#classTypeCombo").val() == "MotherClass") { //כיתת אם
+                        if ($("#NumClassCombo").val() != 0 && $("#LayerCombo").val() != 0) {
+                            //בדיקה האם קיימת כיתת אם כזאת
+                            Layer = $("#LayerCombo option:selected").text();
+                            Subjname = $("#SubjCombo option:selected").text();
+                            Classnum = $("#NumClassCombo").val();
+
+                            let url = "../api/Classes/CheckMotherClass?Layer=" + Layer + "&Subjname=" + Subjname + "&Classnum=" + Classnum;
+                            ajaxCall("GET", url, "", GetMotherSuccess, GetMotherError);
+                            return false;
+                        }
+                        else
+                            swal("!לא מילאת את כל מה שנדרש", "!שגיאה", "error");
+                    }
+
+                    else { //כיתה מקוצעית
+                        if ($("#NumGroupCombo").val() != 0 && $("#GroupCombo").val() != 0 && $("#LayerCombo").val() != 0) {
+                            //בדיקה האם קיימת כיתה מקצועית כזאת
+                            Layer = $("#LayerCombo option:selected").text();
+                            Subjname = $("#SubjCombo option:selected").text();
+                            Levelgroup = $("#GroupCombo option:selected").text();
+                            Groupnum = $("#NumGroupCombo option:selected").val();
+
+                            let url = "../api/Classes/CheckProClass?Layer=" + Layer + "&Subjname=" + Subjname + "&Levelgroup=" + Levelgroup + "&Groupnum=" + Groupnum;
+                            ajaxCall("GET", url, "", GetProSuccess, GetProError);
+                            return false;
+                        }
+                        else
+                            swal("!לא מילאת את כל מה שנדרש", "!שגיאה", "error");
+                    }
+                }
+                else
+                    swal("!לא מילאת את כל מה שנדרש", "!שגיאה", "error");
+            });
+
+
+            $("#classTypeCombo").on("change", function () {
+                if ($("#classTypeCombo").val() == "MotherClass") {
+                    str = "<select id='NumClassCombo' class='u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3 u-radius-50'>";
+                    str += "<option value=0>בחר מספר כיתה</option><option value=1>1</option><option value=2>2</option>";
+                    str += "<option value=3>3</option><option value=4>4</option><option value=5>5</option>";
+                    str += "<option value=6>6</option><option value=7>7</option><option value=8>8</option><option value=9>9</option><option value=10>10</option></select>";
+                    str += "<span class='headLinesS'>מספר כיתה</span>";
+                    $("#RightDiv").html(str);
+                    str = "<select id='LayerCombo' class='u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3 u-radius-50'>";
+                    str += "<option value=0>בחר שיכבה</option>";
+                    str += "<option value=1>ז</option><option value=2>ח</option><option value=3>ט</option></select>";
+                    str += "<span class='headLinesS'>שיכבה</span>";
+                    $("#LeftDiv").html(str);
+                }
+                else if ($("#classTypeCombo").val() == "ProClass") {
+                    str = "<select id='NumGroupCombo' class='u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3 u-radius-50'>";
+                    str += "<option value=0>בחר מספר הקבצה</option><option value=1>1</option><option value=2>2</option>";
+                    str += "<option value=3>3</option><option value=4>4</option><option value=5>5</option></select>";
+                    str += "<span class='headLinesS'>הקבצה</span>";
+                    str += "<select id='GroupCombo' class='u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3 u-radius-50'>";
+                    str += "<option value=0>בחר הקבצה</option>";
+                    str += "<option value=1>א</option><option value=2>ב</option><option value=3>ג</option></select>";
+                    str += "<span class='headLinesS'>מספר הקבצה</span>";
+                    $("#RightDiv").html(str);
+                    str = "<select id='LayerCombo' class='u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3 u-radius-50'>";
+                    str += "<option value=0>בחר שיכבה</option>";
+                    str += "<option value=1>ז</option><option value=2>ח</option><option value=3>ט</option></select>";
+                    str += "<span class='headLinesS'>שיכבה</span>";
+                    $("#LeftDiv").html(str);
+                }
+                else {
+                    $("#RightDiv").html("");
+                    $("#LeftDiv").html("");
+                }
+            });
+
+            dataStudentsEn = [];
+
+            //טעינה מקובץ אקסל
+            $("#input").on("change", function () {
+                var excelFile,
+                    fileReader = new FileReader();
+
+                $("#result").hide();
+
+                fileReader.onload = function (e) {
+                    var buffer = new Uint8Array(fileReader.result);
+
+                    $.ig.excel.Workbook.load(buffer, function (workbook) {
+                        var column, row, newRow, cellValue, columnIndex, i,
+                            worksheet = workbook.worksheets(0),
+                            columnsNumber = 0,
+                            gridColumns = [],
+                            data = [],
+                            worksheetRowsCount;
+
+                        // Both the columns and rows in the worksheet are lazily created and because of this most of the time worksheet.columns().count() will return 0
+                        // So to get the number of columns we read the values in the first row and count. When value is null we stop counting columns:
+                        while (worksheet.rows(0).getCellValue(columnsNumber)) {
+                            columnsNumber++;
+                        }
+
+                        // Iterating through cells in first row and use the cell text as key and header text for the grid columns
+                        for (columnIndex = 0; columnIndex < columnsNumber; columnIndex++) {
+                            column = worksheet.rows(0).getCellText(columnIndex);
+                            gridColumns.push({ headerText: column, key: column }); //לשמור את הכותרות
+                        }
+
+
+                        // We start iterating from 1, because we already read the first row to build the gridColumns array above
+                        // We use each cell value and add it to json array, which will be used as dataSource for the grid
+                        for (i = 1, worksheetRowsCount = worksheet.rows().count(); i < worksheetRowsCount; i++) {
+                            newRow = {};
+                            row = worksheet.rows(i);
+
+                            for (columnIndex = 0; columnIndex < columnsNumber; columnIndex++) {
+                                cellValue = row.getCellText(columnIndex);
+                                newRow[gridColumns[columnIndex].key] = cellValue; //switch case (0,1,2,3,4,5..)
+                                switch (columnIndex) {
+                                    case 0: {
+                                        firstnameCol = cellValue;
+                                        break;
+                                    }
+                                    case 1: {
+                                        lastnameCol = cellValue;
+                                        break;
+                                    }
+                                    case 2: {
+                                        Email = cellValue;
+                                        break;
+                                    }
+                                    case 3: {
+                                        Birthday = cellValue;
+                                        break;
+                                    }
+                                    case 4: {
+                                        Phone = cellValue;
+                                        break;
+                                    }
+                                    case 5: {
+                                        Fullname = cellValue;
+                                        break;
+                                    }
+                                    case 6: {
+                                        EmailP = cellValue;
+                                        break;
+                                    }
+                                    case 7: {
+                                        PhoneP = cellValue;
+                                        break;
+                                    }
+
+                                    default: {
+                                        break;
+                                    }
+                                }
+                            }
+
+                            dataStudentsEn.push({
+                                "First_name": firstnameCol,
+                                "Last_name": lastnameCol,
+                                "Email": Email,
+                                "Birthday": Birthday,
+                                "Phone": Phone,
+                                "Fullname": Fullname,
+                                "EmailP": EmailP,
+                                "PhoneP": PhoneP,
+                            });
+
+                            data.push(newRow);
+                        }
+
+                        // we can also skip passing the gridColumns use autoGenerateColumns = true, or modify the gridColumns array
+                        createGrid(data, gridColumns);
+                    }, function (error) {
+                        $("#result").text("The excel file is corrupted.");
+                        $("#result").show(1000);
+                    });
+                }
+
+                if (this.files.length > 0) {
+                    excelFile = this.files[0];
+                    if (excelFile.type === "application/vnd.ms-excel" || excelFile.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || (excelFile.type === "" && (excelFile.name.endsWith("xls") || excelFile.name.endsWith("xlsx")))) {
+                        fileReader.readAsArrayBuffer(excelFile);
+                    } else {
+                        $("#result").text("The format of the file you have selected is not supported. Please select a valid Excel file ('.xls, *.xlsx').");
+                        $("#result").show(1000);
+                    }
+                }
+
+                $(".next").prop('disabled', false);
+                $(".next").addClass("nextReady");
+            })
+
+        }); //close ready
+
+        function createGrid(data, gridColumns) {
+            if ($("#grid1").data("igGrid") !== undefined) {
+                $("#grid1").igGrid("destroy");
+            }
+
+            DataStudents = data;
+
+            $("#grid1").igGrid({
+                columns: gridColumns,
+                autoGenerateColumns: true,
+                dataSource: data,
+                width: "100%"
+            });
+
+        }
+
+
+        //אחרי בדיקה האם כיתת אם קיימת
+        function GetMotherSuccess(data) {
+            //מקצוע
+            SubjName = $("#SubjCombo option:selected").text();
+            let url = "../api/Classes/ReadSubj?SubjName=" + SubjName;
+            ajaxCall("GET", url, "", GetMotherSubjSuccess, GetMotherSubjError);
+        }
+
+        function GetMotherError(err) {
+            console.log(err);
+            swal("!הכיתה כבר קיימת ", "!שגיאה", "error");
+        }
+
+        //אחרי בדיקה האם כיתה מקצועית קיימת
+        function GetProSuccess(data) {
+            //מקצוע
+            SubjName = $("#SubjCombo option:selected").text();
+            let url = "../api/Classes/ReadSubj?SubjName=" + SubjName;
+            ajaxCall("GET", url, "", GetProSubjSuccess, GetProSubjError);
+        }
+
+        function GetProError(err) {
+            console.log(err);
+            swal("!הכיתה כבר קיימת ", "!שגיאה", "error");
+        }
+
+
+        //אחרי הכנסת שדה מקצוע - כיתת אם
+        function GetMotherSubjSuccess(data) {
+            console.log(data);
+            teacherData = JSON.parse(localStorage.getItem('loggedin'));
+            teachId = teacherData.Id;
+            ClassData = {
+                Layer: $("#LayerCombo option:selected").text(),
+                SubjId: data,
+                IdTeacher: teachId
+            };
+            let url = "../api/Classes/addClass";
+            ajaxCall("POST", url, JSON.stringify(ClassData), PostMotherClassSuccess, PostMotherClassError);
+            return false;
+        }
+
+
+        function GetMotherSubjError(err) {
+            console.log(err);
+            swal("!שגיאה במציאת מקצוע", "!שגיאה", "error");
+        }
+
+
+        //אחרי הכנסת שדה כיתה - כיתת אם
+        function PostMotherClassSuccess(data) {
+            console.log(data);
+            idclass = data;
+            //localStorage.setItem("idClass", idclass);
+
+            MotherData = {
+                IdClass: idclass,
+                Classnum: $("#NumClassCombo").val()
+            };
+            let url = "../api/Classes/addMotherClass";
+            ajaxCall("POST", url, JSON.stringify(MotherData), PostFinishedClassSuccess, PostFinishedClassError);
+        }
+
+        function PostMotherClassError(err) {
+            console.log(err);
+            swal("!שגיאה בהוספת כיתה", "!שגיאה", "error");
+        }
+
+
+        //אחרי הכנסת שדה כיתה - כיתה מקצועית
+        function GetProSubjSuccess(data) {
+            console.log(data);
+            teacherData = JSON.parse(localStorage.getItem('loggedin'));
+            teachId = teacherData.Id;
+            ClassData = {
+                Layer: $("#LayerCombo option:selected").text(),
+                SubjId: data,
+                IdTeacher: teachId
+            };
+            let url = "../api/Classes/addClass";
+            ajaxCall("POST", url, JSON.stringify(ClassData), PostProClassSuccess, PostProClassError);
+            return false;
+        }
+
+        function GetProSubjError(err) {
+            console.log(err);
+        }
+
+        //אחרי הכנסת שדה כיתה - כיתה מקצועית
+        function PostProClassSuccess(data) {
+            console.log(data);
+            idclass = data;
+
+            ProData = {
+                IdClass: idclass,
+                Levelgroup: $("#GroupCombo option:selected").text(),
+                Groupnum: $("#NumGroupCombo").val()
+            };
+            let url = "../api/Classes/addProClass";
+            ajaxCall("POST", url, JSON.stringify(ProData), PostFinishedClassSuccess, PostFinishedClassError);
+        }
+
+        function PostProClassError(err) {
+            console.log(err);
+        }
+
+
+
+        //לאחר הוספת כיתה במלואה
+        function PostFinishedClassSuccess(data) {
+            console.log(data);
+            idClass = data.IdClass; //use u later:)
+            let id_class = JSON.stringify(idClass);
+            localStorage.setItem("idClass", id_class);
+            //adding parent and only after add student
+            Parents = [];
+            Students = [];
+            for (var i = 0; i < dataStudentsEn.length; i++) {
+                Parents.push({
+                    "Email": dataStudentsEn[i].EmailP,
+                    "Pass": "a123456",
+                    "Fullname": dataStudentsEn[i].Fullname,
+                    "Phone": dataStudentsEn[i].PhoneP,
+                });
+
+                Students.push({
+                    "Email": dataStudentsEn[i].Email,
+                    "Pass": "a123456",
+                    "First_name": dataStudentsEn[i].First_name,
+                    "Last_name": dataStudentsEn[i].Last_name,
+                    "Birthday": dataStudentsEn[i].Birthday,
+                    "Phone": dataStudentsEn[i].Phone,
+                    "NumOfPoints": 0,
+                    "IdClass": idClass,
+                    "EmailParent": dataStudentsEn[i].EmailP,
+                });
+            }
+
+            let url = "../api/Parents/addParents";
+            ajaxCall("POST", url, JSON.stringify(Parents), PostParentSuccess, PostParentError);
+            return false;
+
+        }
+
+        function PostFinishedClassError(err) {
+            console.log(err);
+            swal("!שגיאה בהוספת כיתת אם", "!שגיאה", "error");
+        }
+
+
+        function PostParentSuccess(data) {
+            console.log(data);
+            //פה נוסיף תלמידים
+
+            let url = "../api/Students/addStudents";
+            ajaxCall("POST", url, JSON.stringify(Students), PostEndSuccess, PostEndError);
+            return false;
+
+        }
+
+        function PostParentError(err) {
+            console.log(err);
+        }
+
+
+
+        //אחרי הוספת תלמיד
+        //סיוםםם
+        function PostEndSuccess(data) {
+            console.log(data);
+
+            swal("!הנתונים נשמרו במערכת", "", "success")
+                .then((value) => {
+                    window.location.href = "Rules.html";
+                });
+        }
+
+        function PostEndError(err) {
+            console.log(err);
+        }
+
+
+
+
+
+
+
+    </script>
+</head>
+
+<body class="u-body">
+    <header class="u-clearfix u-grey-70 u-header u-header" id="sec-1334">
+        <h1 class="u-text u-text-1">צור כיתה חדשה</h1>
+        <span class="u-icon u-icon-circle u-text-white u-icon-1">
+            <svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 512 512" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-27db"></use></svg><svg class="u-svg-content" id="svg-27db" style="color: rgb(71, 138, 201);">
+                <path d="M135,0c-33.358,0-60,28.006-60,61c0,33.084,26.916,60,60,60s60-26.916,60-60C195,27.98,168.324,0,135,0z M135,91    c-16.542,0-30-13.458-30-30c0-16.804,13.738-31,30-31s30,14.196,30,31C165,77.542,151.542,91,135,91z"></path>
+                <path d="M467,0H255c-24.813,0-45,20.187-45,45v102.365l-13.183-13.182C188.317,125.682,177.017,121,165,121h-30    c-6.359,0-53.641,0-60,0c-41.355,0-75,33.645-75,75c0,8.529,0,77.68,0,90c0,24.813,20.187,45,45,45c5.257,0,10.307-0.906,15-2.57    V467c0,24.813,20.187,45,45,45c11.515,0,22.033-4.347,30-11.486c7.967,7.139,18.485,11.486,30,11.486c24.813,0,45-20.187,45-45    V268.444c11.469,4.045,24.174,3.266,35.126-2.191L295.631,241H467c24.813,0,45-20.187,45-45V45C512,20.187,491.813,0,467,0z     M291.709,209.419l-59.982,29.991c-5.627,2.804-12.616,1.91-17.333-2.806l-8.786-8.787c-9.276-9.276-25.567-2.967-25.607,10.56    c0,0.015-0.002,0.029-0.002,0.044V467c0,8.271-6.729,15-15,15s-15-6.729-15-15V316c0-8.284-6.716-15-15-15s-15,6.716-15,15v151    c0,8.271-6.729,15-15,15s-15-6.729-15-15V286c0-11.31,0-80.756,0-90c0-8.284-6.716-15-15-15s-15,6.716-15,15c0,8.529,0,77.68,0,90    c0,8.271-6.729,15-15,15c-8.271,0-15-6.729-15-15C30,274.69,30,205.244,30,196c0-24.813,20.187-45,45-45c11.31,0,80.756,0,90,0    c4.004,0,7.77,1.561,10.604,4.396l44.707,44.707c4.564,4.565,11.54,5.696,17.314,2.81l40.669-20.335    c7.444-3.725,16.415-0.714,20.124,6.712C302.128,196.711,299.13,205.709,291.709,209.419z M482,196c0,8.271-6.729,15-15,15    H327.419c0.091-0.257,0.191-0.509,0.277-0.768c2.16-6.48,2.808-13.218,1.982-19.8l82.03-41.015    c7.41-3.705,10.413-12.715,6.708-20.125c-3.705-7.41-12.716-10.414-20.125-6.708l-82.025,41.013    c-13.142-12.712-33.613-16.747-51.393-7.849L240,168.185V45c0-8.271,6.729-15,15-15h212c8.271,0,15,6.729,15,15V196z"></path>
+            </svg>
+        </span>
+        <button class="BackBtn">חזרה לכיתות שלי</button>
+    </header>
+    <div id="TopWizard">
+
+    </div>
+    <section class="u-clearfix u-section-1">
+        <div class="u-clearfix u-sheet u-sheet-1">
+            <div class="container">
+                <div id="ff" class="row">
+                    <div class="col-lg-6">
+                        <select id="classTypeCombo" class="u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3 u-radius-50">
+                            <option value="0">כיתת אם/כיתה מקצועית</option>
+                            <option value="MotherClass">כיתת אם</option>
+                            <option value="ProClass">כיתה מקצועית</option>
+                        </select>
+                        <span class="headLinesS">סוג כיתה</span>
+                    </div>
+                    <div class="col-lg-6">
+                        <select id="SubjCombo" class="u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3 u-radius-50">
+                            <option value="0">בחר מקצוע</option>
+                            <option value="1">מתמטיקה</option>
+                            <option value="2">אנגלית</option>
+                            <option value="3">מדעים</option>
+                            <option value="4">תנ"ך</option>
+                            <option value="5">היסטוריה</option>
+                            <option value="6">חינוך גופני</option>
+                            <option value="7">לשון</option>
+                            <option value="8">ספרות</option>
+                            <option value="9">גאוגרפיה</option>
+                        </select>
+                        <span class="headLinesS">מקצוע</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="RightDiv" class="col-lg-6">
+                        <!--//דינאמי-->
+
+                    </div>
+                    <div id="LeftDiv" class="col-lg-6">
+                        <!--//דינאמי-->
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col col-12">
+                        <!-- הכפתורים של אקסל -->
+                        <form>
+                            <input type="file" id="input" hidden />
+                            <label for="input">טען מקובץ אקסל</label>
+                        </form>
+                        <a href="../download/תלמידים פורמט.xlsx" download>
+                            <label>הורד פורמט אקסל</label>
+                        </a>
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <table id="grid1"></table>
+                        <br />
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="next">הבא</button>
+    </section>
+
+</body>
+</html>
+
+
+

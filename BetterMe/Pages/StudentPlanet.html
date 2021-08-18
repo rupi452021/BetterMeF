@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+
+    <link href="../Style/StudentPlanetStyle.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <!--<script type="text/javascript" src="jquery.js" defer=""></script>
+    <script src="jquery-3.5.1.min.js"></script>-->
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+    <!--modal-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="../Scripts/StoreJs.js"></script>
+
+    <title>הכוכב שלי</title>
+    <link rel="icon" href="../images/alienIcon.png">
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <!--draggable-->
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+
+
+    <!--<script src="ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script src="http://www.justcode.us/2013/05/draggable-and-resizable-jquery/"></script>-->
+
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+
+    <script>
+        $(document).ready(function () {
+            //global data
+            ItemsList = "";
+            studentData = "";
+            chosenItem = "";
+            var passTXT = "";
+
+            studentData = JSON.parse(localStorage.getItem('loggedin'));
+
+            hi();
+            
+            $(document).on("click", ".remarks", function () { window.location.href = "RemarksStudent.html"; });
+            $(document).on("click", ".purchases", function () { window.location.href = "PurchasesStudent.html"; });
+            $(document).on("click", ".grades", function () { window.location.href = "GradesStudent.html"; });
+            $(document).on("click", ".store", function () { window.location.href = "Store.html"; });
+            $(document).on("click", ".studentClasses", function () { window.location.href = "StudentClasses.html"; });
+            $(document).on("click", ".updatePass", updatePass);
+            $(document).on("click", ".signOut", function () { window.location.href = "Home.html"; });
+            //$(".imgItem").parent().draggable();
+            //$(".imgItem").parent().resizable();
+            $(".SaveChanges").click(saveImg);
+            $(document).on("dblclick", ".imgItem", deleteImg)
+
+
+        });
+
+        function updatePass() {
+            passTXT = prompt("הכנס סיסמה חדשה:", "");
+            if (passTXT != null && passTXT != "") {
+                //update points
+                let url = "../api/Students/updateStudentPass?email=" + studentData.Email + "&newPass=" + passTXT;
+                ajaxCall("PUT", url, "", PutupdateStudentPassSuccess, PutupdateStudentPassError);
+                return false;
+            }
+        }
+
+        function PutupdateStudentPassSuccess(data) {
+            swal(":סיסמתך החדשה היא", passTXT);
+        }
+
+        function PutupdateStudentPassError(err) {
+            console.log(err);
+        }
+
+        function deleteImg() {
+            if (confirm("?האם אתה בטוח שברצונך למחוק פריט זה")) {
+                element = $(this);
+                StuItem = {
+                    idItem: element.attr('id').trim().split("d_")[1],
+                    EmailStudent: studentData.Email,
+                    topCss: element.css("top"),
+                    leftCss: element.css("left"),
+                };
+                
+
+                let url = "../api/Students/DeleteItem";
+                ajaxCall("DELETE", url, JSON.stringify(StuItem), DeleteItemSuccess, DeleteItemError);
+                return false;
+            }           
+        }
+
+        function DeleteItemSuccess(data) {
+            console.log(data);
+            swal("הפריט נמחק מהכוכב שלך וכמות הנקודות התעדכנה", "", "success")
+                .then((value) => {
+                    window.location.href = "StudentPlanet.html";
+                });
+        }
+
+        function DeleteItemError(err) {
+            console.log(err);
+        }
+
+        
+        function hi() {
+
+            let url = "../api/Students/GetStudentPoints?studentEmail=" + studentData.Email;
+            ajaxCall("GET", url, "", getSuccessStudentPoints, getErrorStudentPoints);
+            return false;
+        }
+
+        function getSuccessStudentPoints(data) {
+            points = data;
+            name = studentData.First_name;
+            str = "!שלום " + name + "";
+            $("#headline").html(str);
+
+            str = points + "SP";
+            $("#subHeadline").html(str);
+
+            let url = "../api/Students/GetStudentItems?studentEmail=" + studentData.Email;
+            ajaxCall("GET", url, "", getSuccessStudentItems, getErrorStudentItems);
+            return false;
+        }
+
+        function getErrorStudentPoints(err) {
+            console.log(err);
+        }
+
+        function getSuccessStudentItems(data) {
+            ItemsList = data;
+            console.log(ItemsList);
+            if (ItemsList != null) {
+                //printing the Items to the screen by their css
+                for (var i = 0; i < ItemsList.length; i++) {
+                    imgItem = "<div id='d_" + ItemsList[i].IdItem + "' class='imgItem' style='position:absolute; top:" + ItemsList[i].TopCss + "; left:" + ItemsList[i].LeftCss + "'><img class='ImgOnPlanet' src='" + ItemsList[i].Img + "' /></div>";
+                    $(".placedItems").append(imgItem);
+                    $("#d_" + ItemsList[i].IdItem).draggable();
+                }
+            }
+
+            //checking if item was bought           
+            chosenItem = JSON.parse(localStorage.getItem('PlaceItem'));
+            console.log(chosenItem);
+
+            if (chosenItem != null) {
+                placeImg = chosenItem.Img;
+                imgItem = "<div id='d_" + chosenItem.IdOfItem + "' class='imgItem' style='position:absolute; top:80px; left:80px'><img class='ImgOnPlanet' src='" + placeImg + "' />";
+                $(".placingItems").append(imgItem); // מה קורה פהההה - הפונקציה עושה בלאגן בדף               
+                $("#d_" + chosenItem.IdOfItem).draggable();
+            }
+        }
+
+
+        function getErrorStudentItems(err) {
+            console.log(err);
+        }
+
+        function saveImg() {
+            studentItem = "";
+            studentItems = []
+
+           // element = $(".placedItems #d_2");
+            $(".placingItems > div").each(function () {
+                element = $(this);
+                if (element != null) { //if its empty, an img hasn't been added
+                    studentItem = {
+                        IdItem: $(this).attr("id").trim().split("d_")[1],
+                        EmailStudent: studentData.Email,
+                        TopCss: (Number(element.css("top").split("px")[0]) - 100) + "px",
+                        LeftCss: element.css("left"),
+                        Img: $(this).find("img").attr('src')
+                    };
+                }
+                console.log(element);
+                console.log(studentItem);
+                studentItems.push(studentItem);
+            });
+
+            
+            $(".placedItems > div").each(function () {
+                element = $(this);
+                if (element != null) { //if its empty, an img hasn't been added
+                    studentItem = {
+                        IdItem: $(this).attr("id").trim().split("d_")[1],
+                        EmailStudent: studentData.Email,
+                        TopCss: element.css("top"),
+                        LeftCss: element.css("left"),
+                        Img: $(this).find("img").attr('src')
+                    };
+                }
+                console.log(studentItem);
+                console.log(element);
+                studentItems.push(studentItem);
+            });
+
+            console.log(studentItems);
+           
+           // element = $(".ImgOnPlanet");
+
+
+            //we still need to save the new positions of the images
+            //use the ItemsList - update it and go to DBS
+            let url = "../api/Students/placeItems";
+            ajaxCall("POST", url, JSON.stringify(studentItems), PostplaceItemSuccess, PostplaceItemError);
+            return false;          
+        }
+
+        function PostplaceItemSuccess(data) {
+            console.log(data);
+            Items = data;
+            chosenItem = "";
+            //show the items on the screen and insert there css
+            localStorage.removeItem("PlaceItem");
+            
+        }
+
+        function PostplaceItemError(err) {
+            console.log(err);
+        }
+
+
+    </script>
+</head>
+<body>
+    <!--<canvas id="canvas"> </canvas>-->
+
+    <h1 id="headline"></h1>
+    <h2 id="subHeadline"></h2>
+    <div class="mainBtns">
+        <button class="btnPlanet studentClasses">הכיתות שלי</button>
+        <button class="btnPlanet store">חנות</button>
+        <button class="btnPlanet remarks">הערות</button><br />
+        <button class="btnPlanet purchases">פרסים שנרכשו</button><br />
+        <button class="btnPlanet grades">ציונים</button><br />
+        <button class="btnPlanet updatePass">עדכן סיסמה</button>
+        <button class="btnPlanet signOut">התנתק</button>
+    </div>
+
+    <div class="planet">
+        <div class="wrap">
+            <div class="background"></div>
+            <div class="clouds"></div>
+        </div>
+        <div class="mask"></div>
+    </div>
+    <div class="placingItems">
+        <h3 class="PurchTitle">עכשיו נרכש</h3>
+    </div>
+    <div class="placedItems">
+
+    </div>
+
+
+
+    <img class="imgInfo imgInfobtn" data-toggle="modal" data-target="#myModalInfo" src="../images/information.png" />
+    <p class="pInfo">!צברו נקודות ובנו את הכוכב הכי יפה בגלקסיה</p>
+    
+    <button class="SaveChanges">שמור שינויים</button>
+
+    <!-- The Modal -->
+    <div class="modal" id="myModalInfo">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h1 class="modal-title">
+                        <img class="imgInfoPoped" src="../images/information.png" />
+                    </h1>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h4><b>מטרת המשחק</b></h4> <br />
+                    <p>,ציברו נקודות באמצעות הישגיכם בשיעורים והשתמשו בהן בחנות</p>
+                    <p>!על מנת ליצור את הכוכב הכי יפה בגלקסיה</p>
+                    <p>!בנוסף, תוכלו לרכוש פרסים לימודיים שידהימו אותם </p> <br />
+                    <p><b>!צאו לכבוש את הגלקסיה</b></p>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">סגור</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

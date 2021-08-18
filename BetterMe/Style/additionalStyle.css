@@ -1,0 +1,203 @@
+﻿#sampleContainer ol {
+    padding: 0px 0px 0px 15px;
+    margin: 0;
+}
+
+#sampleContainer input {
+    margin: 10px 0;
+}
+
+#result {
+    display: none;
+    color: red;
+}
+
+#grid1 {
+    display: inline-table;
+    text-align: center;
+    direction: rtl;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th, tr, thead{
+    text-align:center;
+}
+
+
+label {
+    background-color: #368194;
+    color: white;
+    padding: 0.5rem;
+    font-family: sans-serif;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    float: right;
+    margin-right: 22px;
+}
+
+label:hover {
+    background-color: steelblue;
+}
+
+.ui-iggrid th {
+    text-align: center !important;
+}
+
+.headLinesS{
+    font-size:x-large;
+}
+
+option, select{
+    text-align:center;
+}
+
+
+.BackBtn {
+    color: black;
+    float: right;
+    margin-right: 15px;
+    padding: 5px 14px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+}
+
+    .BackBtn:hover {
+        color: white;
+        font-weight: bold;
+        float: right;
+        margin-right: 15px;
+        padding: 5px 14px;
+        background-color: #292e33c4;
+        border: 1px solid #ddd;
+        border-radius: 15px;
+    }
+
+
+
+
+.changePassBtn {
+    color: black;
+    float: right;
+    margin-right: 15px;
+    padding: 5px 14px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+}
+
+    .changePassBtn:hover {
+        color: white;
+        /*font-weight: bold;*/
+        float: right;
+        margin-right: 15px;
+        padding: 5px 14px;
+        background-color: black;
+        border: 1px solid #ddd;
+        border-radius: 15px;
+    }
+
+.next {
+    border: 1px solid black;
+    margin: 18px;
+    padding: 10px;
+    border-radius: 3px;
+    color: white;
+    background-color: darkgray;
+    font-family: Tahoma;
+    font-weight: bold;
+    width: 88px;
+}
+
+.nextReady {
+    border: 1px solid black;
+    margin: 18px;
+    padding: 10px;
+    border-radius: 3px;
+    color: white;
+    background-color: black;
+    font-family: Tahoma;
+    font-weight: bold;
+    width: 88px;
+}
+
+    .nextReady:hover {
+        border: 1px solid green;
+        background-color: green;
+    }
+
+
+@media only screen and (max-device-width: 600px) {
+    #addClassBtn {
+        width: 100%;
+        height: 93%;
+        max-width: min-content;
+        margin: 0px 98px;
+        padding: 32px;
+        font-size: large;
+    }
+}
+
+@media only screen and (max-device-width: 600px) {
+    .u-svg-link {
+        margin-left: -113px;
+    }
+}
+
+.bohe {
+    color: white;
+}
+
+
+
+.quantity {
+    display: inline-block;
+    width: 105px;
+    height: 36px;
+    background: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+
+/*.plus-minus-input {
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+    .plus-minus-input .input-group-field {
+        text-align: center;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        width: 56px;
+    }
+
+        .plus-minus-input .input-group-field::-webkit-inner-spin-button,
+        .plus-minus-input .input-group-field ::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+    .plus-minus-input .input-group-button .circle {
+        border-radius: 50%;
+        padding: 0.25em 0.8em;
+    }
+
+.input-group {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 30% !important;
+}*/

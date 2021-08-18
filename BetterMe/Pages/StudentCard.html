@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script src="../Scripts/jquery-3.3.1.min.js"></script>
+
+    <title>כרטיס תלמיד</title>
+    <link rel="icon" href="../images/alienIcon.png">
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
+    <!--<link href="../Style/StudentsGraphStyle.css" rel="stylesheet" />-->
+
+    <style type="text/css">
+        body {
+            margin: 10px;
+            
+            
+        }
+
+        #backgroundImg {
+            background-repeat: no-repeat;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            left: 10px;
+            opacity:0.4;
+        }
+
+        #header {
+            margin: 0 auto;
+            text-align: center;
+            font-family: Tahoma;
+        }
+
+        h4 {
+            text-align: end;
+            margin-top: 70px;
+            width: 95%;
+        }
+
+        #phDetails {
+            text-align: center;
+        }
+
+        .BackBtn {
+            color: black;
+            float: right;
+            margin-right: 15px;
+            padding: 5px 14px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            position: absolute;
+            top: 30px;
+            right: 20px;
+        }
+
+            .BackBtn:hover {
+                color: white;
+                font-weight: bold;
+                float: right;
+                margin-right: 15px;
+                padding: 5px 14px;
+                background-color: black;
+                border: 1px solid #ddd;
+                border-radius: 15px;
+            }
+
+        .row {
+            flex-direction: row-reverse;
+        }
+
+        #avgDiv{
+            text-align:center;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        #phGraphSelect {
+            text-align: end;
+        }
+
+        .PurchTable {
+            width: 70%;
+        }
+
+        .PurchHeadline {
+            width: 85%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 18px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #0062cc1c;
+        }
+
+        .firstRowPurchTable {
+            font-weight: bold;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            background-color: steelblue;
+            color: white;
+        }
+
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $(".BackBtn").click(function () { history.back(); });
+            emailChosen = JSON.parse(localStorage.getItem("studentEmail"));
+            getstudentDetails();
+            getallremakrs();
+            getstudentpurchs();
+
+            $("#SubjCombo").change(getGrades);
+            Details = "";
+            avg = 0;
+        });
+
+
+        function getstudentDetails() {
+            let url = "../api/Students/GetStuDetails?emailStu=" + emailChosen;
+            ajaxCall("GET", url, "", getstudentDetailsSuccess, getError);
+            return false;
+        }
+
+        function getError(err) {
+            console.log(err);
+        }
+
+        function getstudentDetailsSuccess(data) {
+            console.log(data);
+            Details = data;
+            str = "<h1><b>כרטיס תלמיד:</b> " + Details.First_name + " " + Details.Last_name + "</h1>";
+            str += "<h2><b>נקודות:</b> " + Details.NumOfPoints + "</h2><hr />";
+            $("#header").append(str);
+
+            str = "<p><b>שם פרטי:</b> " + Details.First_name + "</p>";
+            str += "<p><b>שם משפחה:</b> " + Details.Last_name + "</p>";
+            str += "<p><b>תאריך לידה:</b> " + Details.Birthday + "</p>";
+            str += "<p><b>טלפון:</b> " + Details.Phone + "</p>";
+            str += "<p><b>שם ההורה:</b> " + Details.EmailParent + "</p>";
+            str += "<p><b>טלפון ההורה:</b> " + Details.Pass + "</p>";
+            $("#phDetails").html(str);
+
+            
+        }
+
+
+        function getGrades() {
+            //get the grades from the db
+            subjName = $("#SubjCombo option:selected").text();
+            let url = "../api/Students/getGradesForGraph?email=" + emailChosen + "&subjName=" + subjName;
+            ajaxCall("GET", url, "", getSuccessgetGrades, getError);
+            return false;
+        }
+
+        function getSuccessgetGrades(data) {
+            StudentsGrades = data;
+            console.log(StudentsGrades);
+
+            //graph
+            var xValues = new Array();
+            var yValues = new Array();
+            avg = 0;
+
+            for (var i = 0; i < StudentsGrades.length; i++) {
+                xValues[i] = StudentsGrades[i].ExamNum;
+                yValues[i] = StudentsGrades[i].Grade;
+                avg += StudentsGrades[i].Grade;
+            }
+            if (xValues.length != 0)
+                avg = Math.round(avg / xValues.length);
+
+            new Chart("myChart", {
+                type: "line",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        fill: false,
+                        lineTension: 0,
+                        backgroundColor: "rgba(0,0,255,1.0)",
+                        borderColor: "rgba(0,0,255,0.1)",
+                        data: yValues
+                    }]
+                },
+                options: {
+                    legend: { display: false },
+                    scales: {
+                        yAxes: [{ ticks: { min: 0, max: 100 } }],
+                    }
+                }
+            });
+
+            console.log(avg);
+
+            str = "<p><b>ממוצע ציונים במקצוע:</b> " + avg + "</p>";
+            $("#avgDiv").html(str);
+        }
+
+        function getallremakrs() {
+            let url = "../api/Students/GetAllStudentRemarks?studentEmail=" + emailChosen;
+            ajaxCall("GET", url, "", getSuccessStudentRemarks, getErrorStudentRemarks);
+            return false;
+        }
+
+        function getSuccessStudentRemarks(data) {
+            console.log(data);
+            remakrsData = data;
+            str = "<h4>הערות</h4><table><tr class='firstRowPurchTable'><td>ניקוד</td><td>הערה</td><td>מקצוע</td><td>שם המורה</td></tr>";
+            for (var i = 0; i < remakrsData.length; i++) {
+                str += "<tr><td>" + remakrsData[i].Takenpoints + "</td>"; //subj
+                str += "<td>" + remakrsData[i].RemarkName + "</td>";
+                str += "<td>" + remakrsData[i].Subjname + "</td>";
+                str += "<td>" + remakrsData[i].FirstName + " " + remakrsData[i].LastName + "</td></tr>";
+            }
+            str += "</table>";
+
+            $("#phRemarks").html(str);
+        }
+
+        function getErrorStudentRemarks(err) {
+            console.log(err)
+        }
+
+        function getstudentpurchs() {
+            let url = "../api/Students/GetStudentPurchases?studentEmail=" + emailChosen;
+            ajaxCall("GET", url, "", getSuccessStudentPurchases, getErrorStudentPurchases);
+            return false;
+        }
+
+        function getSuccessStudentPurchases(data) {
+            console.log(data);
+            purchasesData = data;
+            str = "<h4 class='PurchHeadline'>פרסים</h4><table class='PurchTable'><tr class='firstRowPurchTable'><td>מקצוע</td><td>פרס</td></tr>";
+            for (var i = 0; i < purchasesData.length; i++) {
+                str += "<tr><td>" + purchasesData[i].EmailStudent + "</td>"; //subj
+                str += "<td>" + purchasesData[i].PrizeType + "</td></tr>";
+            }
+            str += "</table>";
+
+            $("#phPurch").html(str);
+        }
+
+        function getErrorStudentPurchases(err) {
+            console.log(err);
+        }
+
+    </script>
+</head>
+
+<body>
+    <img id="backgroundImg" src="../images/background.jpg" />
+    <div class="container">
+        <button class="BackBtn">הקודם</button>
+        <div id="header"></div>
+
+        <div class="row">
+            <div class="col-lg-4" id="phDetails"></div>
+            <div class="col-lg-2" id="phGraphSelect">
+                <select id="SubjCombo">
+                    <option value="0">בחר מקצוע</option>
+                    <option value="1">מתמטיקה</option>
+                    <option value="2">אנגלית</option>
+                    <option value="3">מדעים</option>
+                    <option value="4">תנ"ך</option>
+                    <option value="5">היסטוריה</option>
+                    <option value="6">חינוך גופני</option>
+                    <option value="7">לשון</option>
+                    <option value="8">ספרות</option>
+                    <option value="9">גאוגרפיה</option>
+                </select>
+            </div>
+            <div class="col-lg-6" id="phGraph">
+                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                <div id="avgDiv"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6" id="phRemarks"></div>
+            <div class="col-lg-6" id="phPurch"></div>
+        </div>
+
+    </div>
+</body>
+</html>

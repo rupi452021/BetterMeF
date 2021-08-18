@@ -1,0 +1,531 @@
+﻿<!DOCTYPE html>
+<html style="font-size: 16px;">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="צור כיתה חדשה">
+    <meta name="description" content="">
+    <meta name="page_type" content="np-template-header-footer-from-plugin">
+    <title>יצירת כיתה</title>
+    <link rel="icon" href="../images/alienIcon.png">
+    <link href="../Style/nicepage3.css" rel="stylesheet" />
+    <link href="../Style/Rules.css" rel="stylesheet" />
+    <!--<link href="../Style/additionalStyle.css" rel="stylesheet" />-->
+    <!--<script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+    <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>-->
+    <meta name="generator" content="Nicepage 3.8.1,W nicepage.com">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
+    <!--//added-->
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script src="../Scripts/jquery-3.3.1.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script type="application/ld+json">
+        {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": "Site1",
+        "url": "index.html"
+        }
+    </script>
+    <meta property="og:title" content="Rules">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#478ac9">
+    <link rel="canonical" href="index.html">
+    <meta property="og:url" content="index.html">
+    <!--כפתור-->
+    <script data-require="jquery@3.1.1" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link href="../Style/StyleCombo.css" rel="stylesheet" />
+    <script src="../Scripts/ScriptCombo.js"></script>
+    <!--כפתור הוספה/הורדת ניקוד-->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script>
+        $(document).ready(function () { //כפתור הוספה והורדת ניקוד
+            classId = JSON.parse(localStorage.getItem('idClass')); //save class id
+
+            $(document).on("click", ".Add1_1", Add1_1);
+            $(document).on("click", ".Add2", Add2);
+            $(document).on("click", ".Add3", Add3);
+            $(document).on("click", ".Add4", Add4);
+            $(".next2").click(insertRules);
+
+            $(".line3-5").prop("disabled", true);
+            $(".line4-3").prop("disabled", true);
+
+            $(document).on("change", ".bonusSelectedCheck1", function () {
+                if ($(this).val() == 1) {
+                    $(".line3-5").prop("disabled", false);
+                }
+                else {
+                    $(".line3-5").prop("disabled", true);
+                }
+            });
+
+            $(document).on("change", ".bonusSelectedCheck2", function () {
+                if ($(this).val() == 1) {
+                    $(".line4-3").prop("disabled", false);
+                }
+                else {
+                    $(".line4-3").prop("disabled", true);
+                }
+            });
+
+        });
+
+        //saved array
+        var addPointsArr = [];
+        var RandomAddPointsArr = [];
+        var subPointsArr = [];
+        var prizewith = [];
+        var prizewithout = [];
+
+        //איך לקבל את המערך של האובייקטים לקונטרולר
+
+        //למחוק את טבלת פרייס ולתקן את שתי הטבלאות של עם תנאי ובלי תנאי
+        // בהתאם למה שהמשתמש ימלא
+        // גם בדאטא בייס להריץ את הטבלאות רק אחרי תיקונים והתאמות
+
+
+        function insertRules() {
+            if (addPointsArr.length != 0) {
+                let url = "../api/Rules/addPoints"; //counterPoints
+                ajaxCall("POST", url, JSON.stringify(addPointsArr), PostaddPointsSuccess, PostRulesError);
+                return false;
+            }
+            else
+                PostaddPointsSuccess(1);
+        }
+
+        function PostaddPointsSuccess(data) {
+            console.log(data);
+            if (RandomAddPointsArr.length != 0) {
+                let url = "../api/Rules/RandomAddPoints"; //RandomAddPoints
+                ajaxCall("POST", url, JSON.stringify(RandomAddPointsArr), PostRandomAddPointsSuccess, PostRulesError);
+                return false;
+            }
+            else
+                PostRandomAddPointsSuccess(1);
+        }
+
+        function PostRandomAddPointsSuccess(data) {
+            console.log(data);
+            if (subPointsArr.length != 0) {
+                let url = "../api/Rules/subPoints"; //remarks
+                ajaxCall("POST", url, JSON.stringify(subPointsArr), PostsubPointsSuccess, PostRulesError);
+                return false;
+            }
+            else
+                PostsubPointsSuccess(1);
+        }
+
+        function PostsubPointsSuccess(data) {
+            console.log(data);
+            if (prizewith.length != 0) {
+                let url = "../api/Rules/InsertPrizesWith"; //prizeWith
+                ajaxCall("POST", url, JSON.stringify(prizewith), PostPrizeSuccess, PostRulesError);
+                return false;
+            }
+            else
+                PostPrizeSuccess(1);
+        }
+
+        function PostPrizeSuccess(data) {
+            console.log(data);
+            if (prizewithout.length != 0) {
+                let url = "../api/Rules/InsertPrizesWithout"; //prizeWithout
+                ajaxCall("POST", url, JSON.stringify(prizewithout), PostEndSuccess, PostRulesError);
+                return false;
+            }
+            else
+                PostEndSuccess(1);
+        }
+
+
+        function PostEndSuccess(data) {
+            swal("!הנתונים נשמרו במערכת", "", "success")
+                .then((value) => {
+                    window.location.href = "FinalCreatClass.html";
+                });
+        }
+
+        function PostRulesError(err) {
+            console.log(err);
+        }
+
+        function Add1_1() {
+            if ($(".line1_1-1").val().length != 0 && $(".line1_1-2").val().length != 0) {
+                RandomAddPoints = {
+                    IdClass: classId,
+                    Comment: $(".line1_1-1").val(),
+                    Points: $(".line1_1-2").val()
+                };
+
+                RandomAddPointsArr.push(RandomAddPoints);
+
+                $(".Add1_1").hide();
+                $(".line1_1-1").prop('disabled', true);
+                $(".line1_1-2").prop('disabled', true);
+                $(".Add1_1").removeClass("Add1_1");
+                $(".line1_1-1").removeClass("line1_1-1");
+                $(".line1_1-2").removeClass("line1_1-2");
+
+                str = "<div class='row bor'>";
+                str += "<div class='col-lg-3'>";
+                str += "<input type='text' class='line1_1-1' placeholder='הכנס סיבת הוספת ניקוד' required=''></div>";
+                str += "<div class='col-lg-3'>";
+                str += "<input type='text' class='line1_1-2' placeholder='הכנס כמות נקודות להוספה' required=''></div>";
+                str += "<div><button class='Add1_1 next u-radius-5'>שמור</button></div></div>";
+                $("#second2").append(str);
+            }
+            else
+                swal("!לא מילאת את כל השדות", "", "error");
+        }
+
+
+        function Add2() {
+            if ($(".line2-1").val().length != 0 && $(".line2-2").val().length != 0) {
+                Remark = {
+                    IdClass: classId,
+                    Remarkname: $(".line2-1").val(),
+                    Takepoints: -$(".line2-2").val()
+                };
+
+                subPointsArr.push(Remark);
+
+                $(".Add2").hide();
+                $(".line2-1").prop('disabled', true);
+                $(".line2-2").prop('disabled', true);
+                $(".Add2").removeClass("Add2");
+                $(".line2-1").removeClass("line2-1");
+                $(".line2-2").removeClass("line2-2");
+
+                str = "<div class='row bor'>";
+                str += "<div class='col-lg-3'>";
+                str += "<input type='text' class='line2-1' placeholder='הכנס סיבת הורדת ניקוד' required=''></div>";
+                str += "<div class='col-lg-3'>";
+                str += "<input type='text' class='line2-2' placeholder='הכנס כמות נקודות להורדה' required=''></div>";
+                str += "<div><button class='Add2 next u-radius-5'>שמור</button></div></div>";
+                $("#mid").append(str);
+            }
+            else
+                swal("!לא מילאת את כל השדות", "", "error");
+        }
+
+
+
+        function Add3() {
+            if ($(".line3-1").val() != 0 && $(".line3-2").val() != 0 && $(".line3-3").val() != 0 && $(".line3-4").val().length != 0 && $(".line3-6").val().length != 0) {
+                PrizeWith = {
+                    IdClass: classId,
+                    Priceinstore: $(".line3-6").val(),
+                    Prizetype: $(".line3-1 option:selected").text(),
+                    ReferencesTo: $(".line3-2 option:selected").text(),
+                    ImprovmentBy: $(".line3-3 option:selected").text(),
+                    Valueimprovement: $(".line3-4").val(),
+                    Bonus: $(".line3-5").val()
+                };
+
+                prizewith.push(PrizeWith);
+
+                $(".Add3").hide();
+                $(".line3-1").prop('disabled', true);
+                $(".line3-2").prop('disabled', true);
+                $(".line3-3").prop('disabled', true);
+                $(".line3-4").prop('disabled', true);
+                $(".line3-5").prop('disabled', true);
+                $(".line3-6").prop('disabled', true);
+                $(".Add3").removeClass("Add3");
+                $(".bonusSelectedCheck1").removeClass("bonusSelectedCheck1");
+                $(".line3-1").removeClass("line3-1");
+                $(".line3-2").removeClass("line3-2");
+                $(".line3-3").removeClass("line3-3");
+                $(".line3-4").removeClass("line3-4");
+                $(".line3-5").removeClass("line3-5");
+                $(".line3-6").removeClass("line3-6");
+
+
+                str = "<div class='row bor'><div class='col-lg-2'>";
+                str += "<select class='line3-1 bonusSelectedCheck1 u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3'>";
+                str += "<option value=0> בחר פרס</option>";
+                str += "<option value=1>מתן בונוס לציון הסופי</option>";
+                str += "<option value=2>ביטול הערה</option>";
+                str += "<option value=3>ביטול בחינה אחת</option>";
+                str += "</select></div>";
+
+                str += "<div class='col-lg-2'>";
+                str += "<select class='line3-2 u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3'>";
+                str += "<option value=0>בחר יחס שיפור</option>";
+                str += "<option value=1>ביחס לממוצע בקורס</option>";
+                str += "<option value=2>ביחס לציון מבחן אחרון</option>";
+                str += "</select></div>";
+
+                str += "<div class='col-lg-2'>";
+                str += "<select class='line3-3 u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3'>";
+                str += "<option value=0>בחר שיפור</option>";
+                str += "<option value=1>שיפור בנקודות</option>";
+                str += "<option value=2>שיפור באחוזים</option>";
+                str += "</select></div>";
+
+                str += "<div class='col-lg-3'>";
+                str += "<input type='text' class='line3-4 problem' placeholder='הכנס גודל שיפור' required=''></div>";
+
+                str += "<div class='col-lg-1.5'>"
+                str += "<input type='text' class='line3-5' placeholder='הכנס גובה בונוס'></div>";
+
+                str += "<div class='col-lg-2'>";
+                str += "<input class='line3-6' type='text' placeholder='הכנס כמות נקודות לרכישה' required=''></div>";
+                str += "<div class='col-lg-2'><button class='Add3 next u-radius-5 problem'>שמור</button></div></div>";
+
+                $("#last1").append(str);
+
+                $(".line3-5").prop("disabled", true);
+            }
+            else
+                swal("!לא מילאת את כל השדות", "", "error");
+        }
+
+
+        function Add4() {
+            if ($(".line4-1").val() != 0 && $(".line4-2").val().length != 0) {
+
+                PrizeWithout = {
+                    IdClass: classId,
+                    Prizetype: $(".line4-1 option:selected").text(),
+                    Priceinstore: $(".line4-2").val(),
+                    Bonus: $(".line4-3").val()
+                };
+
+                prizewithout.push(PrizeWithout);
+
+                $(".Add4").hide();
+                $(".Add4").removeClass("Add4");
+                $(".line4-1").prop('disabled', true);
+                $(".line4-2").prop('disabled', true);
+                $(".line4-3").prop('disabled', true);
+                $(".bonusSelectedCheck2").removeClass("bonusSelectedCheck2");
+                $(".line4-1").removeClass("line4-1");
+                $(".line4-2").removeClass("line4-2");
+                $(".line4-3").removeClass("line4-3");
+
+
+                str = "<div class='row bor'>";
+                str += "<div class='col-lg-3'>";
+                str += "<select class='line4-1 bonusSelectedCheck2 u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3'>";
+
+                str += "<option value=0> בחר פרס</option>";
+                str += "<option value=1>מתן בונוס לציון הסופי</option>";
+                str += "<option value=2>ביטול הערה</option>";
+                str += "<option value=3>ביטול בחינה אחת</option>";
+                str += "</select></div>";
+
+                str += "<div class='col-lg-3'>"
+                str += "<input type='text' class='line4-3' placeholder='הכנס גובה בונוס'></div>";
+
+
+                str += "<div class='col-lg-3'>";
+                str += "<input type='text' class='line4-2' placeholder='הכנס כמות נקודות לרכישה' required=''></div>";
+                str += "<div><button class='Add4 next u-radius-5 problem'>שמור</button></div></div>";
+
+                $("#last2").append(str);
+                $(".line4-3").prop("disabled", true);
+            }
+            else
+                swal("!לא מילאת את כל השדות", "", "error");
+        }
+
+
+    </script>
+</head>
+<body class="u-body">
+    <header class="u-clearfix u-grey-70 u-header u-header" id="sec-1334">
+        <h1>צור כיתה חדשה</h1>
+        <span class="u-icon u-icon-circle u-text-white u-icon-1">
+            <svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 512 512" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-7c42"></use></svg><svg class="u-svg-content" id="svg-7c42" style="color: rgb(71, 138, 201);">
+                <path d="M135,0c-33.358,0-60,28.006-60,61c0,33.084,26.916,60,60,60s60-26.916,60-60C195,27.98,168.324,0,135,0z M135,91    c-16.542,0-30-13.458-30-30c0-16.804,13.738-31,30-31s30,14.196,30,31C165,77.542,151.542,91,135,91z"></path>
+                <path d="M467,0H255c-24.813,0-45,20.187-45,45v102.365l-13.183-13.182C188.317,125.682,177.017,121,165,121h-30    c-6.359,0-53.641,0-60,0c-41.355,0-75,33.645-75,75c0,8.529,0,77.68,0,90c0,24.813,20.187,45,45,45c5.257,0,10.307-0.906,15-2.57    V467c0,24.813,20.187,45,45,45c11.515,0,22.033-4.347,30-11.486c7.967,7.139,18.485,11.486,30,11.486c24.813,0,45-20.187,45-45    V268.444c11.469,4.045,24.174,3.266,35.126-2.191L295.631,241H467c24.813,0,45-20.187,45-45V45C512,20.187,491.813,0,467,0z     M291.709,209.419l-59.982,29.991c-5.627,2.804-12.616,1.91-17.333-2.806l-8.786-8.787c-9.276-9.276-25.567-2.967-25.607,10.56    c0,0.015-0.002,0.029-0.002,0.044V467c0,8.271-6.729,15-15,15s-15-6.729-15-15V316c0-8.284-6.716-15-15-15s-15,6.716-15,15v151    c0,8.271-6.729,15-15,15s-15-6.729-15-15V286c0-11.31,0-80.756,0-90c0-8.284-6.716-15-15-15s-15,6.716-15,15c0,8.529,0,77.68,0,90    c0,8.271-6.729,15-15,15c-8.271,0-15-6.729-15-15C30,274.69,30,205.244,30,196c0-24.813,20.187-45,45-45c11.31,0,80.756,0,90,0    c4.004,0,7.77,1.561,10.604,4.396l44.707,44.707c4.564,4.565,11.54,5.696,17.314,2.81l40.669-20.335    c7.444-3.725,16.415-0.714,20.124,6.712C302.128,196.711,299.13,205.709,291.709,209.419z M482,196c0,8.271-6.729,15-15,15    H327.419c0.091-0.257,0.191-0.509,0.277-0.768c2.16-6.48,2.808-13.218,1.982-19.8l82.03-41.015    c7.41-3.705,10.413-12.715,6.708-20.125c-3.705-7.41-12.716-10.414-20.125-6.708l-82.025,41.013    c-13.142-12.712-33.613-16.747-51.393-7.849L240,168.185V45c0-8.271,6.729-15,15-15h212c8.271,0,15,6.729,15,15V196z"></path>
+            </svg>
+        </span>
+        <nav class="u-align-left u-menu u-menu-dropdown u-offcanvas u-menu-1">
+            <div class="menu-collapse">
+                <a class="u-button-style u-nav-link" href="#">
+                    <svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 302 302" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-0b31"></use></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svg-0b31" x="0px" y="0px" viewBox="0 0 302 302" style="enable-background:new 0 0 302 302;" xml:space="preserve" class="u-svg-content"><g><rect y="36" width="302" height="30"></rect><rect y="236" width="302" height="30"></rect><rect y="136" width="302" height="30"></rect></svg>
+                </a>
+            </div>
+            <div class="u-custom-menu u-nav-container">
+                <ul class="u-nav u-unstyled u-nav-1">
+                    <li class="u-nav-item">
+                        <a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="התלמידים-שלי.html" style="padding: 10px 34px;">סיום יצירת כיתה</a>
+                    </li>
+                    <li class="u-nav-item">
+                        <a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="החוקים-שלי.html" style="padding: 10px 34px;">החוקים שלי</a>
+                    </li>
+                    <li class="u-nav-item">
+                        <a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" style="padding: 10px 34px;">התלמידים שלי</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="u-custom-menu u-nav-container-collapse">
+                <div class="u-align-center u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+                    <div class="u-sidenav-overflow">
+                        <div class="u-menu-close"></div>
+                        <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2">
+                            <li class="u-nav-item">
+                                <a class="u-button-style u-nav-link" href="התלמידים-שלי.html" style="padding: 10px 34px;">סיום יצירת כיתה</a>
+                            </li>
+                            <li class="u-nav-item">
+                                <a class="u-button-style u-nav-link" href="החוקים-שלי.html" style="padding: 10px 34px;">החוקים שלי</a>
+                            </li>
+                            <li class="u-nav-item">
+                                <a class="u-button-style u-nav-link" style="padding: 10px 34px;">התלמידים שלי</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
+            </div>
+        </nav><div class="u-align-left u-border-1 u-border-grey-15 u-expanded-width u-line u-line-horizontal u-line-1"></div>
+    </header>
+    <section class="u-clearfix u-section-1" id="sec-826b">
+        <div class="container">
+            <div id="first" class="row border">
+                <div class="col-xl-12">
+                    <h3>
+                        הגדר כיצד צוברים נקודות
+                        <i class="fas fa-plus-circle"></i>
+                    </h3>
+                </div>
+            </div>
+
+            <!--מפה-->
+            <div id="second2">
+                <div class="row bor">
+                    <div class="col-lg-3">
+                        <input type="text" class="line1_1-1" placeholder="הכנס סיבה להוספת ניקוד" required="">
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" class="line1_1-2" placeholder="הכנס כמות נקודות להוספה" required="">
+                    </div>
+                    <div>
+                        <button class="Add1_1 next u-radius-5 problem">שמור</button>
+                    </div>
+                </div>
+            </div>
+            <!--עד פה-->
+            <div id="second" class="row border">
+                <div class="col-xl-12">
+                    <h3>
+                        הגדר כיצד מאבדים נקודות
+                        <i class="far fa-times-circle"></i>
+                    </h3>
+                </div>
+            </div>
+            <div id="mid">
+                <div class="row bor">
+                    <div class="col-lg-3">
+                        <input type="text" class="line2-1" placeholder="הכנס סיבת הורדת ניקוד" required="">
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" class="line2-2" placeholder="הכנס כמות נקודות להורדה" required="">
+                    </div>
+                    <div>
+                        <button class="Add2 next u-radius-5 problem">שמור</button>
+                    </div>
+                </div>
+            </div>
+            <div id="three" class="row border">
+                <div class="col-xl-12">
+                    <h3>
+                        הגדר כיצד מקבלים פרסים
+                        <u><b>עם</b></u>
+                        תנאי
+                        <i class="fas fa-gift"></i>
+                    </h3>
+                </div>
+            </div>
+            <div id="last1">
+                <div class="row bor">
+                    <div class="col-lg-2">
+                        <select class="line3-1 bonusSelectedCheck1 u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3">
+                            <option value="0"> בחר פרס</option>
+                            <option value="1">מתן בונוס לציון המבחן</option>
+                            <option value="2">ביטול הערה</option>
+                            <option value="3">ביטול בחינה אחת</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
+                        <select class="line3-2 u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3">
+                            <option value="0">בחר יחס שיפור</option>
+                            <option value="1">ביחס לממוצע בקורס</option>
+                            <option value="2">ביחס לציון מבחן אחרון</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
+                        <select class="line3-3 u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3">
+                            <option value="0">בחר שיפור</option>
+                            <option value="1">שיפור בנקודות</option>
+                            <option value="2">שיפור באחוזים</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" class="line3-4 problem" placeholder="הכנס גודל שיפור" required="">
+                    </div>
+                    <div class="col-lg-1.5">
+                        <input type="text" class="line3-5" placeholder="הכנס גובה בונוס">
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="line3-6" placeholder="הכנס כמות נקודות לרכישה" required="">
+                    </div>
+                    <div class="col-lg-2">
+                        <button class="Add3 next u-radius-5 problem">שמור</button>
+                    </div>
+                </div>
+            </div>
+            <div id="four" class="row border">
+                <div class="col-xl-12">
+                    <h3>
+                        הגדר כיצד מקבלים פרסים
+                        <u><b>ללא</b></u>
+                        תנאי
+                        <i class="fas fa-gift"></i>
+                    </h3>
+                </div>
+            </div>
+            <div id="last2">
+                <div class="row bor">
+                    <div class="col-lg-3">
+                        <select class="line4-1 bonusSelectedCheck2 u-btn-round u-hover-palette-1-light-2 u-palette-1-light-3">
+                            <option value="0"> בחר פרס</option>
+                            <option value="1">מתן בונוס לציון המבחן</option>
+                            <option value="2">ביטול הערה</option>
+                            <option value="3">ביטול בחינה אחת</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" class="line4-3" placeholder="הכנס גובה בונוס">
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" class="line4-2" placeholder="הכנס כמות נקודות לרכישה" required="">
+                    </div>
+                    <div>
+                        <button class="Add4 next u-radius-5 problem">שמור</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="next2">סיום</button>
+    </section>
+
+</body>
+</html>

@@ -1,0 +1,758 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="jquery.js" defer=""></script>
+    <script src="jquery-3.5.1.min.js"></script>
+
+    <link rel="icon" href="../images/alienIcon.png">
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <!--<script type="text/javascript" src="../Scripts/StoreJs.js"></script>-->
+
+    <link href="../Style/StoreCss.css" rel="stylesheet" />
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+    <title>חנות</title>
+
+
+    <script>
+        $(document).ready(function () {
+
+            
+            itemId = 0;
+            img = "";
+            ItemPoints = 0;
+            StudentPoints = 0;
+            studentEmail = "";
+            idclass = JSON.parse(localStorage.getItem('idClass'));
+            hi();
+
+            $(".BackBtn").click(function () { window.location.href = "StudentPlanet.html"; });
+
+
+            $('a.page-scroll').click(function () {
+                if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+                    var target = $(this.hash);
+                    target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                    if (target.length) {
+                        $('html,body').animate({
+                            scrollTop: target.offset().top - 180
+                        }, 900);
+                        return false;
+                    }
+                }
+            });
+
+            $(".btn").click(function () {
+                $(".btn").removeClass("active");
+                $(this).addClass("active");
+            });
+
+
+            $(".btnCard").click(buy);
+
+        });
+
+        function hi() {
+            studentData = JSON.parse(localStorage.getItem('loggedin'));
+            StudentPoints = studentData.NumOfPoints;
+            
+            
+            str = StudentPoints + "SP";
+            $("#headlineStore").html(str);
+
+            //need to do a get function here in order to disable the buying buttons
+        }
+
+        function buy() {
+            itemId = $(this).attr("id");
+            img = $("#" + itemId).parent().parent().find('img').attr('src');
+            studentData = JSON.parse(localStorage.getItem('loggedin'));
+            studentEmail = studentData.Email;
+            
+
+            
+            ItemPoints = $(this).parent().find('p').text();
+            ItemPoints = ItemPoints.split("S");
+            ItemPoints = parseInt(ItemPoints[0]);
+
+            if (StudentPoints >= ItemPoints) {
+                let url = "../api/Students/buyItem?itemId=" + itemId + "&studentEmail=" + studentEmail;
+                ajaxCall("POST", url, "", PostBuyItemSuccess, PostBuyItemError);
+                return false;
+            }
+            else
+                swal("!אין לך מספיק נקודות", "", "error");
+        }
+
+        function PostBuyItemSuccess(data) {
+
+            placeItem = {
+                IdOfItem: itemId,
+                Img: img
+            };
+            let placingItem = JSON.stringify(placeItem);
+            localStorage.setItem("PlaceItem", placingItem);
+
+
+            //update points
+            let url = "../api/Students/updatePoints?StudentPoints=" + StudentPoints + "&ItemPoints=" + ItemPoints +  "&studentEmail=" + studentEmail;
+            ajaxCall("PUT", url, "", PutBuyItemSuccess, PostBuyItemError);
+            return false;
+            
+        }
+
+        function PutBuyItemSuccess(data) {           
+            studentData = JSON.parse(localStorage.getItem('loggedin'));
+
+            UpdatedStudent = {
+                "Email": studentData.Email,
+                "Pass": studentData.Pass,
+                "First_name": studentData.First_name,
+                "Last_name": studentData.Last_name,
+                "Birthday": studentData.Birthday,
+                "Phone": studentData.Phone,
+                "NumOfPoints": studentData.NumOfPoints - ItemPoints,
+                "IdClass": idclass,
+                "EmailParent": studentData.EmailP,
+            };
+
+            localStorage.removeItem("loggedin");
+            let UpStudent = JSON.stringify(UpdatedStudent);
+            localStorage.setItem("loggedin", UpStudent);
+
+            swal("!הפריט נרכש בהצלחה", "", "success")
+                .then((value) => {
+                    window.location.href = "StudentPlanet.html";
+                });
+        }
+
+        function PostBuyItemError(err) {
+            console.log(err);
+        }
+
+
+    </script>
+
+
+</head>
+    <body>
+        <div class="container">
+            <div id="headd">
+                <h1 id="headlineStore"><b></b></h1>
+                <button class="BackBtn">חזור</button><br />
+                <h2>:רכוש פריטים לכוכב שלך</h2>
+                <div id="myBtnContainer">
+                    <a href="#cars" class="btn page-scroll">כלי תחבורה</a>
+                    <a href="#pets" class="btn page-scroll">חיות מחמד</a>
+                    <a href="#nature" class="btn page-scroll">טבע</a>
+                    <a href="#people" class="btn page-scroll">חייזרים</a>
+                    <a href="#homes" class="btn page-scroll">בתים</a>
+                </div>
+            </div>
+
+            
+            <div id="body">
+
+                <h2 id="homes">בתים</h2>
+                <!--row 1-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/castle1.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>הממלכה של ארתור</b></h3>
+                            <p>800SP</p>
+                            <button id="1" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/castle2.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>בית גדול</b></h3>
+                            <p>600SP</p>
+                            <button id="2" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/castle3.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>בית כחול</b></h3>
+                            <p>550SP</p>
+                            <button id="3" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/castle4.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>בית ורוד</b></h3>
+                            <p>400SP</p>
+                            <button id="4" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--row 2-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/castle5.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>בית עץ גדול</b></h3>
+                            <p>600SP</p>
+                            <button id="5" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/castle6.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>בית עץ</b></h3>
+                            <p>200SP</p>
+                            <button id="6" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/castle7.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>בית עץ מופלא</b></h3>
+                            <p>550SP</p>
+                            <button id="7" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/castle8.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>בית עץ קטן</b></h3>
+                            <p>100SP</p>
+                            <button id="8" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h2 id="people">חייזרים</h2>
+                <!--row 3-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/alien1.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>חייזר כחול</b></h3>
+                            <p>200SP</p>
+                            <button id="9" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/alien2.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>חללית 1</b></h3>
+                            <p>500SP</p>
+                            <button id="10" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/alien5.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>חללית 2</b></h3>
+                            <p>450SP</p>
+                            <button id="11" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/alien9.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>חייזר ירוק</b></h3>
+                            <p>200SP</p>
+                            <button id="12" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--row 4-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/alien4.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>חייזר אדום קטן</b></h3>
+                            <p>200SP</p>
+                            <button id="13" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/alien6.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>חייזר כחול קטן</b></h3>
+                            <p>150SP</p>
+                            <button id="14" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/alien7.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>פינגווין ירוק</b></h3>
+                            <p>350SP</p>
+                            <button id="15" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h2 id="nature">טבע</h2>
+                <!--row 5-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/nature1.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>אגם יפהפה</b></h3>
+                            <p>600SP</p>
+                            <button id="16" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/nature2.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>עץ יפה</b></h3>
+                            <p>200SP</p>
+                            <button id="17" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/nature3.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>עץ גדול</b></h3>
+                            <p>150SP</p>
+                            <button id="18" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/nature4.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>סנאי על גזע</b></h3>
+                            <p>300SP</p>
+                            <button id="19" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--row 6-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/nature5.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>מפל מים</b></h3>
+                            <p>650SP</p>
+                            <button id="20" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h2 id="pets">חיות מחמד</h2>
+                <!--row 7-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/pets1.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>ציפור כחולה</b></h3>
+                            <p>600SP</p>
+                            <button id="21" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/pets2.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>סימבה</b></h3>
+                            <p>600SP</p>
+                            <button id="22" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/pets3.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>זאזו</b></h3>
+                            <p>300SP</p>
+                            <button id="23" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/pets4.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>מושו</b></h3>
+                            <p>450SP</p>
+                            <button id="24" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--row 8-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/pets5.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>טנטו</b></h3>
+                            <p>300SP</p>
+                            <button id="25" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/pets9.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>מרטי</b></h3>
+                            <p>300SP</p>
+                            <button id="26" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/pets7.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>גוליאן ומוריס</b></h3>
+                            <p>450SP</p>
+                            <button id="27" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/pets8.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>אלכס</b></h3>
+                            <p>400SP</p>
+                            <button id="28" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--row 9-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/pets10.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>אליוט</b></h3>
+                            <p>600SP</p>
+                            <button id="29" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                    
+
+
+                <h2 id="cars">כלי תחבורה</h2>
+                <!--row 10-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/cars1.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>מכונית מירוץ</b></h3>
+                            <p>400SP</p>
+                            <button id="30" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/cars2.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>הרכב של גלוריה</b></h3>
+                            <p>100SP</p>
+                            <button id="31" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/cars3.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>חייזר ברכב</b></h3>
+                            <p>150SP</p>
+                            <button id="32" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/cars4.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>מכונית ספורט</b></h3>
+                            <p>400SP</p>
+                            <button id="33" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--row 11-->
+                <div class="row">
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/cars5.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>מטוס ורוד</b></h3>
+                            <p>300SP</p>
+                            <button id="34" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/cars6.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>מטוס אדום</b></h3>
+                            <p>300SP</p>
+                            <button id="35" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card col col-lg-3">
+                        <img class="cardImg" src="../imagesStore/cars7.png" alt="Avatar" style="width:100%">
+                        <div>
+                            <h3><b>מטוס עם כלב</b></h3>
+                            <p>350SP</p>
+                            <button id="36" class="btnCard">
+                                קנה
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--after rows-->
+            </div>
+        </div>
+
+
+
+    </body>
+</html>
